@@ -4,31 +4,31 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Cart action success</title>
+    <title>Product action success</title>
 </head>
 <body>
 
 <br/><br/>
 <div class="center">
-    <h2>Cart entity action success</h2>
-    <%--@elvariable id="cartDTO" type="edu.avo.hillel_j2ee_hw_06.model.cartDTO"--%>
+    <h2>Product entity action success</h2>
+    <%--@elvariable id="productDTO" type="edu.avo.hillel_j2ee_hw_06.model.productDTO"--%>
         <table>
             <tr>
                 <td>ID: </td>
-                <td>${cartDTO.id}</td>
+                <td>${productDTO.id}</td>
             </tr>
             <tr>
-                <td>Description: </td>
-                <td>${cartDTO.description}</td>
+                <td>Name: </td>
+                <td>${productDTO.name}</td>
             </tr>
             <tr>
-                <td>Summa: </td>
-                <td>${cartDTO.summa}</td>
+                <td>Price: </td>
+                <td>${productDTO.price}</td>
             </tr>
         </table>
 
     <br/>
-    <a href="/findAllCarts">Carts</a>
+    <a href="/findAllProducts">Products</a>
 </div>
 
 

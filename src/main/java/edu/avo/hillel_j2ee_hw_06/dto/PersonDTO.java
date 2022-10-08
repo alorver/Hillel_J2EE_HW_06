@@ -1,7 +1,5 @@
 package edu.avo.hillel_j2ee_hw_06.dto;
 
-//import edu.avo.hillel_j2ee_hw_06.model.Person;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,11 +20,5 @@ public class PersonDTO {
     @NotBlank
     private String email;
 
-//    public PersonDTO(Person person) {
-//        this.id = person.getId();
-//        this.firstName = person.getFirstName();
-//        this.lastName = person.getLastName();
-//        this.email = person.getEmail();
-//    }
 
 }

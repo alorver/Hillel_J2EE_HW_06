@@ -1,7 +1,6 @@
 package edu.avo.hillel_j2ee_hw_06.model;
 
 
-import edu.avo.hillel_j2ee_hw_06.dto.CartDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,13 +37,6 @@ public class Cart {
     @JoinColumn(name = "person_id")
     private Person person;
 
-/*
-    public Cart(CartDTO cartDTO) {
-        this.id = cartDTO.getId();
-        this.description = cartDTO.getDescription();
-        this.summa = cartDTO.getSumma() == null ? new BigDecimal("0.00") : cartDTO.getSumma();
-    }
-*/
 
     @Override
     public boolean equals(Object o) {

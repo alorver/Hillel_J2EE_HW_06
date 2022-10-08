@@ -1,7 +1,6 @@
 package edu.avo.hillel_j2ee_hw_06.model;
 
 
-import edu.avo.hillel_j2ee_hw_06.dto.ShopDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,15 +37,6 @@ public class Shop {
             inverseJoinColumns = @JoinColumn(name = "person_id"))
     private Set<Person> personSet = new HashSet<>();
 
-
-/*
-    public Shop(ShopDTO shopDTO) {
-        this.id = shopDTO.getId();
-        this.name = shopDTO.getName();
-        this.webSite = shopDTO.getWebSite();
-        this.phoneNumber = shopDTO.getPhoneNumber();
-    }
-*/
 
     @Override
     public boolean equals(Object o) {

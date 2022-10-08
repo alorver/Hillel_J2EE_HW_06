@@ -9,7 +9,11 @@
 <%--<a href="${pageContext.request.contextPath}/personList">Person List</a>--%>
 <a href="/findAllShops">Shops</a>
 <br/>
+<a href="/findAllPersons">Persons</a>
+<br/>
 <a href="/findAllCarts">Carts</a>
+<br/>
+<a href="/findAllProducts">Products</a>
 
 
 </body>

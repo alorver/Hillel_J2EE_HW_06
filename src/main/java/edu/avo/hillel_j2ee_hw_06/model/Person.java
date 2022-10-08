@@ -1,6 +1,5 @@
 package edu.avo.hillel_j2ee_hw_06.model;
 
-import edu.avo.hillel_j2ee_hw_06.dto.PersonDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,14 +33,6 @@ public class Person {
     @ManyToMany(mappedBy = "personSet")
     private Set<Shop> shopSet = new HashSet<>();
 
-/*
-    public Person(PersonDTO personDTO) {
-        this.id = personDTO.getId();
-        this.firstName = personDTO.getFirstName();
-        this.lastName = personDTO.getLastName();
-        this.email = personDTO.getEmail();
-    }
-*/
 
     @Override
     public boolean equals(Object o) {

@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Cart create</title>
+    <title>Product create</title>
 </head>
 <body>
 
@@ -12,13 +12,17 @@
 <br/><br/>
 
 <div class="center">
-    <h2>Cart create</h2>
-    <%--@elvariable id="cartDTO" type="cartDTO"--%>
-    <form:form action="postCreateCart" method="post" modelAttribute="cartDTO">
+    <h2>Product create</h2>
+    <%--@elvariable id="productDTO" type="productDTO"--%>
+    <form:form action="postCreateProduct" method="post" modelAttribute="productDTO">
         <table>
             <tr>
-                <td>Description: </td>
-                <td><form:input path="description" /></td>
+                <td>Name: </td>
+                <td><form:input path="name" /></td>
+            </tr>
+            <tr>
+                <td>Price: </td>
+                <td><form:input path="price" /></td>
             </tr>
             <tr>
                 <td colspan="2"><input type="submit" value="Save"></td>

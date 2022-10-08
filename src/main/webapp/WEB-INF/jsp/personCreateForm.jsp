@@ -4,19 +4,18 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Person new</title>
+    <title>Person create</title>
 </head>
 <body>
-<%--<h1>Welcome</h1>--%>
-<%--<h2>${message}</h2>--%>
-<%--<a href="${pageContext.request.contextPath}/personList">Person List</a>--%>
+
 
 <br/><br/>
-<div align="center">
-    <h2>New Person</h2>
+
+<div class="center">
+    <h2>Person create</h2>
     <%--@elvariable id="personDTO" type="personDTO"--%>
-    <form:form action="savePerson" method="post" modelAttribute="personDTO">
-        <table border="0" cellpadding="5">
+    <form:form action="postCreatePerson" method="post" modelAttribute="personDTO">
+        <table>
             <tr>
                 <td>First name: </td>
                 <td><form:input path="firstName" /></td>
@@ -31,7 +30,6 @@
             </tr>
             <tr>
                 <td colspan="2"><input type="submit" value="Save"></td>
-<%--                <form:button>Register</form:button>--%>
             </tr>
         </table>
     </form:form>

@@ -4,38 +4,35 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Person new</title>
+    <title>Person action success</title>
 </head>
 <body>
-<%--<h1>Welcome</h1>--%>
-<%--<h2>${message}</h2>--%>
-<%--<a href="${pageContext.request.contextPath}/personList">Person List</a>--%>
 
 <br/><br/>
-<div align="center">
-    <h2>Person entity created success</h2>
-    <%--@elvariable id="person" type="edu.avo.hillel_j2ee_hw_06.model.Person"--%>
-        <table border="0" cellpadding="5">
+<div class="center">
+    <h2>Person entity action success</h2>
+    <%--@elvariable id="personDTO" type="edu.avo.hillel_j2ee_hw_06.model.personDTO"--%>
+        <table>
             <tr>
                 <td>ID: </td>
-                <td>${person.id}</td>
+                <td>${personDTO.id}</td>
             </tr>
             <tr>
                 <td>First name: </td>
-                <td>${person.firstName}</td>
+                <td>${personDTO.firstName}</td>
             </tr>
             <tr>
                 <td>Last name: </td>
-                <td>${person.lastName}</td>
+                <td>${personDTO.lastName}</td>
             </tr>
             <tr>
                 <td>E-Mail: </td>
-                <td>${person.email}</td>
+                <td>${personDTO.email}</td>
             </tr>
         </table>
 
     <br/>
-    <a href="/">Main menu</a>
+    <a href="/findAllPersons">Persons</a>
 </div>
 
 

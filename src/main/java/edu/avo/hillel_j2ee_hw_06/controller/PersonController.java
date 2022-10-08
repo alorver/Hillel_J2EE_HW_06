@@ -5,20 +5,23 @@ import edu.avo.hillel_j2ee_hw_06.dto.PersonDTO;
 import edu.avo.hillel_j2ee_hw_06.mappers.CartMapper;
 import edu.avo.hillel_j2ee_hw_06.mappers.PersonMapper;
 import edu.avo.hillel_j2ee_hw_06.model.Person;
+import edu.avo.hillel_j2ee_hw_06.service.CartService;
 import edu.avo.hillel_j2ee_hw_06.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static edu.avo.hillel_j2ee_hw_06.constants.PersonControllerConstants.ErrorMessages.*;
+import static edu.avo.hillel_j2ee_hw_06.constants.PersonControllerConstants.InfoMessages.*;
 
 
 @Slf4j
@@ -26,134 +29,141 @@ import static edu.avo.hillel_j2ee_hw_06.constants.PersonControllerConstants.Erro
 public class PersonController {
 
     private final PersonService personService;
+    private final CartService cartService;
 
-    public PersonController(PersonService personService) {
+    public PersonController(PersonService personService, CartService cartService) {
         this.personService = personService;
+        this.cartService = cartService;
     }
 
-
-/*
-    @PostMapping("/create")
-    public String createPerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            log.error("Main fields are empty");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Main fields are empty");
-        }
-        final Person person = new Person(personDTO);
-        return String.format("Person Id=%d is added ", personService.createPerson(person));
-    }
-*/
-
-    @GetMapping("/newPerson")
-    public String createPerson(Model model) {
-
-        PersonDTO personDTO = new PersonDTO();
-//        personDTO.setFirstName("John");
-        model.addAttribute("personDTO", personDTO);
-        return "personForm";
-
-//        return String.format("Person Id=%d is added ", personService.createPerson(person));
-    }
-
-
-    @PostMapping("/savePerson")
-    public String savePerson(@ModelAttribute("personDTO") @Valid PersonDTO personDTO, Model model, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            log.error("Main fields are empty");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Main fields are empty");
-        }
-//        final Person person = new Person(personDTO);
-        final Person person = PersonMapper.INSTANCE.toPerson(personDTO);
-        person.setId(personService.createPerson(person));
-        model.addAttribute("person", person );
-        return "personSuccess";
-
-//        return String.format("Person Id=%d is added ", personService.createPerson(person));
-    }
-
-//    @RequestMapping(value = {"/personList"}, method = RequestMethod.GET)
-    @GetMapping(value = {"/personList"})
-    public String findAll(Model model) {
-
-        List<PersonDTO> persons = personService.findAll().stream()
-                .map(PersonMapper.INSTANCE::toPersonDTO)
-                .collect(Collectors.toList());
-
-        model.addAttribute("persons", persons );
+    @GetMapping("/findAllPersons")
+    public String findAllPerson(Model model) {
+        List<PersonDTO> personDTOS =
+                personService.findAll().stream().map(PersonMapper.INSTANCE::toPersonDTO).collect(Collectors.toList());
+        model.addAttribute("personDTOS", personDTOS);
         return "personList";
     }
-/*
-    @GetMapping("/findAll")
-    public List<PersonDTO> findAll() {
-        return personService.findAll().stream()
-                .map(PersonDTO::new)
-                .collect(Collectors.toList());
-    }
-*/
 
-    @GetMapping("/findPersonById/{id}")
-    public PersonDTO findById(@PathVariable("id") int id) {
-        Person person = personService.findById(id);
-        if (person == null) {
-            log.error(PERSON_NOT_FOUND);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, PERSON_NOT_FOUND);
-        }
-        return PersonMapper.INSTANCE.toPersonDTO(person);
+
+    @GetMapping("/getCreatePerson")
+    public String getCreatePerson(Model model) {
+        PersonDTO personDTO = new PersonDTO();
+        model.addAttribute(PERSON_DTO, personDTO);
+        return "personCreateForm";
     }
 
+    @PostMapping("/postCreatePerson")
+    public String postCreatePerson(@ModelAttribute(PERSON_DTO) @Valid PersonDTO personDTO, Model model,
+                                   BindingResult bindingResult) {
 
-    @DeleteMapping("/deletePersonById/{id}")
-    public String deleteById(@PathVariable("id") int id) {
-        if (!personService.deletePerson(id)) {
-            log.error(PERSON_NOT_FOUND);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, PERSON_NOT_FOUND);
-        }
-        return String.format("Person Id=%d is deleted", id);
-    }
-
-
-    @PutMapping("/updatePerson")
-    public String updatePerson(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
-
+        String returnForm = "personSaveSuccess";
         if (bindingResult.hasErrors()) {
-            log.error("Nothing is filled");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nothing is filled");
+            log.error(MAIN_FIELDS_ARE_EMPTY);
+            model.addAttribute(ERROR_MESSAGE, MAIN_FIELDS_ARE_EMPTY);
+            returnForm = PERSON_ERROR;
+        } else {
+            final Person person = PersonMapper.INSTANCE.toPerson(personDTO);
+            person.setId(personService.createPerson(person));
+            model.addAttribute(PERSON_DTO, PersonMapper.INSTANCE.toPersonDTO(person));
         }
-        final Person person = PersonMapper.INSTANCE.toPerson(personDTO);
-        if (!personService.updatePerson(person)) {
-            log.error(PERSON_NOT_FOUND);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, PERSON_NOT_FOUND);
-        }
-        return String.format("Person Id=%d is updated", person.getId());
+        return returnForm;
     }
 
-    @GetMapping("/addPersonCart/{personId}/{cartId}")
-    public String addPersonCart(@PathVariable("personId") int personId,
-                                @PathVariable("cartId") int cartId) {
+
+    @GetMapping("/deletePersonById")
+    public String deleteById(@RequestParam int personId, Model model) {
+        String returnForm = PERSON_MESSAGE;
+        if (!personService.deletePerson(personId)) {
+            log.error(PERSON_NOT_FOUND);
+            model.addAttribute(ERROR_MESSAGE, PERSON_NOT_FOUND);
+            returnForm = PERSON_ERROR;
+        } else {
+            model.addAttribute(MESSAGE, String.format("Person %d deleted", personId));
+        }
+        return returnForm;
+    }
+
+
+    @GetMapping("/getUpdatePerson")
+    public String getUpdatePerson(@RequestParam int personId, Model model) {
+        PersonDTO personDTO = PersonMapper.INSTANCE.toPersonDTO(personService.findById(personId));
+        model.addAttribute(PERSON_DTO, personDTO);
+        return "personUpdateForm";
+    }
+
+    @PostMapping("/postUpdatePerson")
+    public String putUpdatePerson(@ModelAttribute(PERSON_DTO) @Valid PersonDTO personDTO, Model model,
+                                  BindingResult bindingResult) {
+
+        String returnForm = "personSaveSuccess";
+        if (bindingResult.hasErrors()) {
+            log.error(MAIN_FIELDS_ARE_EMPTY);
+            model.addAttribute(ERROR_MESSAGE, MAIN_FIELDS_ARE_EMPTY);
+            returnForm = PERSON_ERROR;
+
+        } else {
+
+            final Person person = PersonMapper.INSTANCE.toPerson(personDTO);
+            if (!personService.updatePerson(person)) {
+                log.error(PERSON_NOT_FOUND);
+                model.addAttribute(ERROR_MESSAGE, PERSON_NOT_FOUND);
+                returnForm = PERSON_ERROR;
+            } else {
+                model.addAttribute(PERSON_DTO, PersonMapper.INSTANCE.toPersonDTO(person));
+            }
+        }
+        return returnForm;
+    }
+
+
+    @GetMapping("/getPersonCarts")
+    public String getPersonCarts(@RequestParam int personId, Model model) {
+        List<CartDTO> personCarts =
+                personService.findPersonCarts(personId).stream().map(CartMapper.INSTANCE::toCartDTO).collect(Collectors.toList());
+        model.addAttribute(PERSON_ID, personId);
+        model.addAttribute("personCarts", personCarts);
+        return "personCarts";
+    }
+
+    @GetMapping("/getPersonCartsAdd")
+    public String addPersonCarts(@RequestParam(PERSON_ID) int personId, Model model) {
+        List<CartDTO> cartDTOS =
+                cartService.findAll().stream().map(CartMapper.INSTANCE::toCartDTO).collect(Collectors.toList());
+        model.addAttribute(PERSON_ID, personId);
+        model.addAttribute("cartDTOS", cartDTOS);
+        return "personCartsAdd";
+    }
+
+    @GetMapping("/addPersonCart")
+    public String addPersonCart(@RequestParam(PERSON_ID) int personId, @RequestParam("cartId") int cartId,
+                                Model model) {
+        String returnForm = PERSON_MESSAGE;
         if (!personService.addPersonCart(personId, cartId)) {
             log.error(PERSON_OR_CART_IS_NOT_FOUND);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, PERSON_OR_CART_IS_NOT_FOUND);
+            model.addAttribute("errorMessage", PERSON_OR_CART_IS_NOT_FOUND);
+            returnForm = "personError";
+
+        } else {
+            model.addAttribute(MESSAGE, String.format("Cart Id=%d is added", cartId));
+
         }
-        return String.format("Cart Id=%d is added", cartId);
+        return returnForm;
     }
 
-    @DeleteMapping("/deletePersonCart/{personId}/{cartId}")
-    public String deletePersonCart(@PathVariable("personId") int personId,
-                                   @PathVariable("cartId") int cartId) {
+    @GetMapping("/deletePersonCart")
+    public String deletePersonCart(@RequestParam(PERSON_ID) int personId, @RequestParam("cartId") int cartId,
+                                   Model model) {
+        String returnForm = PERSON_MESSAGE;
         if (!personService.deletePersonCart(personId, cartId)) {
             log.error(PERSON_OR_CART_IS_NOT_FOUND);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, PERSON_OR_CART_IS_NOT_FOUND);
-        }
-        return String.format("Cart Id=%d is deleted", cartId);
-    }
+            model.addAttribute(ERROR_MESSAGE, PERSON_OR_CART_IS_NOT_FOUND);
+            returnForm = PERSON_ERROR;
 
-    @GetMapping("/getPersonCarts/{personId}")
-    public List<CartDTO> getPersonCarts(@PathVariable("personId") int personId) {
-        return personService.findPersonCarts(personId).stream()
-                .map(CartMapper.INSTANCE::toCartDTO)
-                .collect(Collectors.toList());
+        } else {
+            model.addAttribute(MESSAGE, String.format("Cart Id=%d is deleted", cartId));
+
+        }
+        return returnForm;
     }
 
 

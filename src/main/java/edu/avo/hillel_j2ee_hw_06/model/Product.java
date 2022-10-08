@@ -1,7 +1,6 @@
 package edu.avo.hillel_j2ee_hw_06.model;
 
 
-import edu.avo.hillel_j2ee_hw_06.dto.ProductDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,13 +33,6 @@ public class Product {
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
-/*
-    public Product(ProductDTO productDTO) {
-        this.id = productDTO.getId();
-        this.name = productDTO.getName();
-        this.price = productDTO.getPrice();
-    }
-*/
 
     @Override
     public boolean equals(Object o) {
